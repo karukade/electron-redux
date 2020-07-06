@@ -1,7 +1,10 @@
 import { Middleware } from 'redux';
-import assert from 'assert';
 import { ALIASED } from '../actions/alias';
 import aliasRegistry from '../registry/alias';
+
+const assert = (cond: boolean, log: string) => {
+  if (!cond) console.error(log);
+};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const triggerAlias: Middleware = (store) => (next) => (action) => {
@@ -9,7 +12,7 @@ const triggerAlias: Middleware = (store) => (next) => (action) => {
   if (action.type === ALIASED) {
     assert(action.meta && action.meta.trigger, 'No trigger defined');
     const alias = aliasRegistry.get(action.meta.trigger);
-    assert(alias, `Trigger alias ${action.meta.trigger} not found`);
+    assert(!!alias, `Trigger alias ${action.meta.trigger} not found`);
     const args = action.payload || [];
 
     // trigger alias
